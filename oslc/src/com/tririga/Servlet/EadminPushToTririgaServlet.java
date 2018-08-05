@@ -41,6 +41,7 @@ public class EadminPushToTririgaServlet extends HttpServlet {
 		//boolean isAllocation = srcJson.contains(Const.CONTRACT_ALLOCATION_NODE_NAME);
 		//if(isAllocation){
 		ArrayList<String> list = JsonUtil.resolveJson(srcJson, Const.INTERFACE_ASSET_LEASE_FIELD);
+		
 		for(String str : list){
 			System.out.println(str);
 		}

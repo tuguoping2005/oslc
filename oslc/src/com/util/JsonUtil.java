@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.common.Const;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,10 +20,13 @@ import com.google.gson.JsonParser;
  * 
  */
 public class JsonUtil {
-	public static ArrayList<String> list = new ArrayList<>();
+	public static ArrayList<String> list = Lists.newArrayList();
 
 	public static ArrayList<String> resolveJson(String srcJson,
 			String[] elements) {
+		if(StringUtils.isBlank(srcJson) || Arrays.asList(elements).isEmpty()){
+			return null;
+		};
 		// 将字符串转换成jsonObject对象
 		JsonObject jo = new JsonParser().parse(srcJson).getAsJsonObject();
 		JsonObject jsonObject = new JsonObject();
