@@ -2,12 +2,16 @@ package com.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.common.Const;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,9 +24,11 @@ import com.google.gson.JsonParser;
  * 
  */
 public class JsonUtil {
-	public static ArrayList<String> list = Lists.newArrayList();
+	public static ArrayList<String> allocationList = Lists.newArrayList();
+	public static ArrayList<String> assetLeaseList = Lists.newArrayList();
+	public static HashMap<String,List<String>> map= Maps.newHashMap();
 
-	public static ArrayList<String> resolveJson(String srcJson,
+	public static Map<String,List<String>> resolveJson(String srcJson,
 			String[] elements) {
 		if(StringUtils.isBlank(srcJson) || Arrays.asList(elements).isEmpty()){
 			return null;
@@ -50,13 +56,15 @@ public class JsonUtil {
 						while (it.hasNext()) {
 							JsonElement element = it.next();
 							String s = element.toString();
-							list.add(s);
+							allocationList.add(s);
 						}
+						map.put("allocations",allocationList);
 					}
 				}
 			}
 		}
-		list.add(jsonObject.toString());
-		return list;
+		assetLeaseList.add(jsonObject.toString());
+		map.put("assetLeaseTemplate",assetLeaseList);
+		return map;
 	}
 }
