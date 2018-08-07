@@ -5,12 +5,13 @@ package com.common;
  */
 public enum ResponseCode {
 
-    SUCCESS(200,"SUCCESS"),
-    ASY_SUCCESS(201,"异步响应成功"),
-    ERROR(400,"请求出错"),
+    SUCCESS(200,"请求成功"),
+    CREATE_SUCCESS(201,"资源创建成功"),
+    ERROR(400,"请求错误"),
+    UN_RESPONSE(404,"服务器无法响应"),
     AUTH_ERROR(401,"认证失败"),
-    NEED_LOGIN(10,"NEED_LOGIN"),
-    ILLEGAL_ARGUMENT(20,"ILLEGAL_ARGUMENT");
+    NEED_LOGIN(10,"用户名或密码错误,请重新登录"),
+    ILLEGAL_ARGUMENT(20,"参数不合法");	
 
     private final int code;
     private final String desc;

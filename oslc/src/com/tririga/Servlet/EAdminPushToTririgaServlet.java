@@ -23,15 +23,11 @@ import com.util.JsonUtil;
 
 public class EAdminPushToTririgaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory
 			.getLogger(EAdminPushToTririgaServlet.class);
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
 
-	}
-
-	@SuppressWarnings("unused")
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		ServerResponse<String> serverResponse = null;
@@ -45,15 +41,15 @@ public class EAdminPushToTririgaServlet extends HttpServlet {
 			sb.append(str);
 		}
 		String srcJson = sb.toString();
-		System.out.println(srcJson);
 		
+		//发数据请求Tririga
 		int code = sendRequestToTririga(srcJson);
-
+		System.out.println(code); 
 		if (Const.SUCCESS == code) {
 			serverResponse = ServerResponse.createBySuccess();
-		} else if (Const.ASY_SUCCESS == code) {
+		} else if (Const.CREATE_SUCCESS == code) {
 			serverResponse = ServerResponse
-					.createBySuccess(ResponseCode.ASY_SUCCESS.getDesc());
+					.createBySuccess(ResponseCode.CREATE_SUCCESS.getDesc());
 		} else {
 			ServerResponse.createByErrorMessage("请求资源失败");
 		}
@@ -75,26 +71,19 @@ public class EAdminPushToTririgaServlet extends HttpServlet {
 		Map<String, List<String>> map = JsonUtil.resolveJson(srcJson,
 				Const.INTERFACE_ASSET_LEASE_FIELD);
 		int responseCode = 0;
-		String uri = "";
 		for (String s : map.keySet()) {
 			if ("assetLeaseTemplate".equalsIgnoreCase(s)) {
 				List<String> list = map.get(s);
 				String assetLeaseTemplateJson = list.get(0);
-				uri = Const.HOST_NAME + Const.CREATE_ASSET_LEASE_URI;
-				System.out.println(uri);
-				System.out.println(assetLeaseTemplateJson);
 				responseCode = HttpRequestTririgaClient.httpPost(
-						assetLeaseTemplateJson, uri);
+						assetLeaseTemplateJson,Const.ASSET_LEASE_TEMPLATE);
 
 			} else if ("allocations".equalsIgnoreCase(s)) {
-				if (Const.ASY_SUCCESS == responseCode) {
-					uri = Const.HOST_NAME
-							+ Const.CREATE_ASSET_LEASE_ALLOCATION_URI;
+				if (Const.CREATE_SUCCESS == responseCode) {
 					List<String> list = map.get(s);
 					for (String allocationsJson : list) {
-						System.out.println(allocationsJson);
 						responseCode = HttpRequestTririgaClient.httpPost(
-								allocationsJson, uri);
+								allocationsJson,Const.ALLOCATIONS);
 					}
 				}
 			}
@@ -103,17 +92,5 @@ public class EAdminPushToTririgaServlet extends HttpServlet {
 		return responseCode;
 	}
 
-	protected void doPut(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doDelete(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
 
 }
