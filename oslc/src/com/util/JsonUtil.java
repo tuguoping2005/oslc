@@ -39,8 +39,9 @@ public class JsonUtil {
 		for (int i = 0; i < elements.length; i++) {
 			String key = elements[i];
 			if (!key.equalsIgnoreCase(Const.CONTRACT_ALLOCATION_NODE_NAME)) {
-				JsonElement value = jo.get(Const.FIELD_PRIFIX + key);
-				jsonObject.add(Const.FIELD_PRIFIX + key, value);
+				key = Const.FIELD_PRIFIX + key;
+				JsonElement value = jo.get(key);
+				jsonObject.add(key, value);
 			}
 
 			// »ñÈ¡Allocation json×Ö·û´®
