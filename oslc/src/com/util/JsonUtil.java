@@ -24,8 +24,7 @@ import com.google.gson.JsonParser;
  * 
  */
 public class JsonUtil {
-	public static ArrayList<String> allocationList = Lists.newArrayList();
-	public static ArrayList<String> assetLeaseList = Lists.newArrayList();
+	
 	public static HashMap<String,List<String>> map= Maps.newHashMap();
 
 	public static Map<String,List<String>> resolveJson(String srcJson,
@@ -36,6 +35,11 @@ public class JsonUtil {
 		// 将字符串转换成jsonObject对象
 		JsonObject jo = new JsonParser().parse(srcJson).getAsJsonObject();
 		JsonObject jsonObject = new JsonObject();
+		
+		//分别创建allocationList，assetLeaseList保存json数据，
+		ArrayList<String> allocationList = Lists.newArrayList();
+		ArrayList<String> assetLeaseList = Lists.newArrayList();
+		
 		for (int i = 0; i < elements.length; i++) {
 			String key = elements[i];
 			if (!key.equalsIgnoreCase(Const.CONTRACT_ALLOCATION_NODE_NAME)) {
@@ -47,8 +51,7 @@ public class JsonUtil {
 			// 获取Allocation json字符串
 			if (Arrays.toString(elements).contains(
 					Const.CONTRACT_ALLOCATION_NODE_NAME)) {
-				if (Const.CONTRACT_ALLOCATION_NODE_NAME
-						.equalsIgnoreCase(elements[i])) {
+				if (Const.CONTRACT_ALLOCATION_NODE_NAME.equalsIgnoreCase(elements[i])) {
 					String allocationKey = Const.FIELD_PRIFIX + elements[i];
 					JsonElement e = jo.get(allocationKey);
 					if (e != null && e.isJsonArray()) {
