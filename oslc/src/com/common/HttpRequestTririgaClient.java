@@ -14,11 +14,15 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.controller.TririgaController;
 import com.google.common.collect.Lists;
 
 public class HttpRequestTririgaClient {
-
+	private static Logger log = LoggerFactory.getLogger(HttpRequestTririgaClient.class);
+	
 	@SuppressWarnings("deprecation")
 	public static int httpPost(String json,String marker){
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -40,7 +44,7 @@ public class HttpRequestTririgaClient {
             	uri = Const.HOST_NAME+Const.CREATE_ASSET_LEASE_URI;
             }
             uri += "?" + params;
-            
+            log.info(uri);
 	        // 创建httpPost.
             URL url1 = new URL(uri); 
             URI uri2 = new URI(url1.getProtocol(), url1.getHost(), url1.getPath(), url1.getQuery(), null);
@@ -53,9 +57,9 @@ public class HttpRequestTririgaClient {
             
 	        // 通过请求对象获取响应对象
 	        response = httpClient.execute(httpPost);
+	        
 	        // 判断网络连接状态码是否正常(0--201都数正常)
 	        tririgaResponseCode = response.getStatusLine().getStatusCode();
-	        
     	} catch (Exception e) {
 	        e.printStackTrace();
 	    }finally{
@@ -64,7 +68,7 @@ public class HttpRequestTririgaClient {
 	            	httpPost.releaseConnection();
 	                Thread.sleep(500);
 	            } catch (InterruptedException e) {
-	                e.printStackTrace();
+	            	log.error(e.getMessage());
 	            }
 	        }
 	        httpClient.getConnectionManager().shutdown();

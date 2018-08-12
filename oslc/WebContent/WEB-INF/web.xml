@@ -17,15 +17,11 @@
 		<servlet-class>com.tririga.Servlet.Log4JServlet</servlet-class>
 		<init-param>
 			<param-name>log4j</param-name>
-			<param-value>/WEB-INF/logxml/log4j.xml</param-value>
+			<param-value>/WEB-INF/classes/logXml/log4j.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 
 	</servlet>
-	<!-- <servlet> <description></description> <display-name>EAdminPushToTririgaServlet</display-name> 
-		<servlet-name>EAdminPushToTririgaServlet</servlet-name> <servlet-class>com.tririga.Servlet.EAdminPushToTririgaServlet</servlet-class> 
-		</servlet> <servlet-mapping> <servlet-name>EAdminPushToTririgaServlet</servlet-name> 
-		<url-pattern>/eAdminPushToTririgaServlet</url-pattern> </servlet-mapping> -->
 
 	<servlet>
 		<servlet-name>Jersey RESTful Application</servlet-name>
@@ -40,10 +36,5 @@
 		<servlet-name>Jersey RESTful Application</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
-	<!-- <servlet> <servlet-name>JerseyRestFul</servlet-name> <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class> 
-		<init-param> <param-name>com.sun.jersey.config.property.packages</param-name> 
-		<param-value>com.controller</param-value> </init-param> <load-on-startup>1</load-on-startup> 
-		</servlet> <servlet-mapping> <servlet-name>JerseyRestFul</servlet-name> <url-pattern>/rest/*</url-pattern> 
-		</servlet-mapping> -->
 
 </web-app>
