@@ -11,7 +11,10 @@ public enum ResponseCode {
     UN_RESPONSE(404,"服务器无法响应"),
     AUTH_ERROR(401,"认证失败"),
     NEED_LOGIN(10,"用户名或密码错误,请重新登录"),
-    ILLEGAL_ARGUMENT(20,"参数不合法");	
+    ILLEGAL_ARGUMENT(20,"参数不合法"),
+    ILLEGAL_JSON(21,"json数据不合法"),	
+    NULL_JSON(22,"JSON数据为空"),
+    ILLEGAL_PERCENT(23,"摊销百分比总和不等于100");
 
     private final int code;
     private final String desc;

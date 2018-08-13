@@ -17,6 +17,7 @@ public class Const {
 	public static final String USERNAME="tWX591602";
 	public static final String PASSWORD="password";
 	
+	public static final Integer ALLOCATIONS_PERCENTTAGE = 100;
 	public static final String ALLOCATIONS="allocations";
 	public static final String ASSET_LEASE_TEMPLATE="assetLeaseTemplate";
 	
@@ -25,10 +26,15 @@ public class Const {
 	public static final String 	CONTRACT_ALLOCATION_NODE_NAME="cstAllocationsTX";
 	
 	
+	
 	public static final int UN_RESPONSE = 404;//服务器无法响应
 	public static final int AUTH_ERROR = 401;//认证失败
 	public static final int SUCCESS = 200;//请求成功
 	public static final int CREATE_SUCCESS = 201;//资源创建成功
+	public static final int ILLEGAL_ARGUMENT = 20;//参数不合法
+	public static final int ILLEGAL_JSON = 21;//json数据不合法
+	public static final int NULL_JSON = 22;//JSON数据为空
+	public static final int ILLEGAL_PERCENT = 23;//摊销百分比总和不等于100
 	
 	public static final String[] INTERFACE_ASSET_LEASE_FIELD={
 			"action",
