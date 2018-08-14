@@ -42,38 +42,34 @@ public class TririgaController {
 			@QueryParam("username") String username,
 			@QueryParam("password") String password,
 			@Context HttpServletRequest request) throws IOException {
-		TririgaResponse tririgaResponse = null;
 
-		// 验证用户名，密码
+		// ①验证用户名，密码
 		if (!isCheck(username, password)) {
 			return TririgaResponse.createByErrorCodeMessage(
 					ResponseCode.NEED_LOGIN.getCode(),
 					ResponseCode.NEED_LOGIN.getDesc());
 		}
 
-		// 以二进制流的形式获取请求体中的json数据
-		InputStream in = request.getInputStream();
-		StringBuilder sb = new StringBuilder("");
-		byte[] bs = new byte[1024];
-		int len = -1;
-		while ((len = in.read(bs)) != -1) {
-			String str = new String(bs, 0, len, Const.CHAR_SET);
-			sb.append(str);
-		}
-		String srcJson = sb.toString();
-//		log.info("请求体json字符串为:{}", srcJson);
-
-		// 校验srcJson是否合法
+		// ②以二进制流的形式获取请求体中的JSON数据
+		String srcJson = this.getJsonData(request);
+		
+		// ③校验srcJson是否合法
 		if (!this.isValid(srcJson)) {
 			return TririgaResponse.createByErrorCodeMessage(
 					ResponseCode.ILLEGAL_JSON.getCode(),
 					ResponseCode.ILLEGAL_JSON.getDesc());
 		}
 
-		// 发数据请求Tririga
+		// ④发数据请求Tririga
 		int code = this.sendRequestToTririga(srcJson);
 		log.info("请求Tririga响应code:{}", code);
-
+		
+		// ⑤以JSON格式返回响应数据
+		return this.responseJson(code);
+	}
+	
+	private TririgaResponse responseJson(int code){
+		TririgaResponse tririgaResponse = null;
 		if (Const.SUCCESS == code) {
 			tririgaResponse = TririgaResponse.createBySuccessCodeMessage(
 					ResponseCode.SUCCESS.getCode(),
@@ -103,6 +99,35 @@ public class TririgaController {
 		}
 
 		return tririgaResponse;
+	}
+
+	private String getJsonData(HttpServletRequest request) {
+		
+		InputStream in = null;
+		String srcJson = null;
+		try {
+			in = request.getInputStream();
+			StringBuilder sb = new StringBuilder("");
+			byte[] bs = new byte[1024];
+			int len = -1;
+			while ((len = in.read(bs)) != -1) {
+				String str = new String(bs, 0, len, Const.CHAR_SET);
+				sb.append(str);
+			}
+			srcJson = sb.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(in != null){
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return srcJson;
 	}
 
 	/**
@@ -135,7 +160,7 @@ public class TririgaController {
 	private boolean isCheck(String username, String password) {
 		String user = PropertiesUtil.getProperty(Const.USER_INFO);
 		String pwd = PropertiesUtil.getProperty(Const.PWD_INFO);
-//		log.info("username:{} password:{}", username, password);
+		// log.info("username:{} password:{}", username, password);
 		if (StringUtils.isNotBlank(username)
 				&& StringUtils.isNotBlank(password)) {
 			if (user.contains(username) && pwd.contains(password)) {
@@ -155,6 +180,7 @@ public class TririgaController {
 
 	/**
 	 * 校验摊销百分比是否等于100
+	 * 
 	 * @param map
 	 * @return
 	 */
@@ -166,7 +192,7 @@ public class TririgaController {
 				for (String per : perList) {
 					totalPercent += Integer.parseInt(per.trim());
 				}
-				log.info("摊销百分比总和:"+totalPercent );
+				log.info("摊销百分比总和:" + totalPercent);
 				return totalPercent != 100;
 			}
 		}
@@ -198,7 +224,8 @@ public class TririgaController {
 			if ("assetLeaseTemplate".equalsIgnoreCase(s)) {
 				List<String> list = map.get(s);
 				String assetLeaseTemplateJson = list.get(0);
-//				log.info("assetLeaseTemplateJson :{}", assetLeaseTemplateJson);
+				// log.info("assetLeaseTemplateJson :{}",
+				// assetLeaseTemplateJson);
 				responseCode = HttpRequestTririgaClient.httpPost(
 						assetLeaseTemplateJson, Const.ASSET_LEASE_TEMPLATE);
 
@@ -206,7 +233,7 @@ public class TririgaController {
 				if (Const.CREATE_SUCCESS == responseCode) {
 					List<String> list = map.get(s);
 					for (String allocationsJson : list) {
-//						log.info("allocationsJson :{}", allocationsJson);
+						// log.info("allocationsJson :{}", allocationsJson);
 						responseCode = HttpRequestTririgaClient.httpPost(
 								allocationsJson, Const.ALLOCATIONS);
 					}
