@@ -46,7 +46,9 @@ public class TririgaController {
 
 		// 验证用户名，密码
 		if (!isCheck(username, password)) {
-			return TririgaResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+			return TririgaResponse.createByErrorCodeMessage(
+					ResponseCode.NEED_LOGIN.getCode(),
+					ResponseCode.NEED_LOGIN.getDesc());
 		}
 
 		// 以二进制流的形式获取请求体中的json数据
@@ -59,7 +61,7 @@ public class TririgaController {
 			sb.append(str);
 		}
 		String srcJson = sb.toString();
-		log.info("请求体json字符串为:{}", srcJson);
+//		log.info("请求体json字符串为:{}", srcJson);
 
 		// 校验srcJson是否合法
 		if (!this.isValid(srcJson)) {
@@ -133,7 +135,7 @@ public class TririgaController {
 	private boolean isCheck(String username, String password) {
 		String user = PropertiesUtil.getProperty(Const.USER_INFO);
 		String pwd = PropertiesUtil.getProperty(Const.PWD_INFO);
-		log.info("username:{} password:{}", username, password);
+//		log.info("username:{} password:{}", username, password);
 		if (StringUtils.isNotBlank(username)
 				&& StringUtils.isNotBlank(password)) {
 			if (user.contains(username) && pwd.contains(password)) {
@@ -145,6 +147,27 @@ public class TririgaController {
 						return true;
 					}
 				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * 校验摊销百分比是否等于100
+	 * @param map
+	 * @return
+	 */
+	private boolean checkPercent(Map<String, List<String>> map) {
+		for (String s : map.keySet()) {
+			if ("percentages".equalsIgnoreCase(s)) {
+				List<String> perList = map.get(s);
+				int totalPercent = 0;
+				for (String per : perList) {
+					totalPercent += Integer.parseInt(per.trim());
+				}
+				log.info("摊销百分比总和:"+totalPercent );
+				return totalPercent != 100;
 			}
 		}
 
@@ -167,25 +190,15 @@ public class TririgaController {
 		}
 
 		// 23 摊销百分比不等于100，则返回
-		for (String s : map.keySet()) {
-			if ("percentages".equalsIgnoreCase(s)) {
-				List<String> perList = map.get(s);
-				int totalPercent = 0;
-				for (String per : perList) {
-					totalPercent += Integer.parseInt(per.trim());
-				}
-				log.info(totalPercent + "");
-				if (totalPercent != 100) {
-					return ResponseCode.ILLEGAL_PERCENT.getCode();
-				}
-			}
+		if (this.checkPercent(map)) {
+			return ResponseCode.ILLEGAL_PERCENT.getCode();
 		}
 
 		for (String s : map.keySet()) {
 			if ("assetLeaseTemplate".equalsIgnoreCase(s)) {
 				List<String> list = map.get(s);
 				String assetLeaseTemplateJson = list.get(0);
-				log.info("assetLeaseTemplateJson :{}", assetLeaseTemplateJson);
+//				log.info("assetLeaseTemplateJson :{}", assetLeaseTemplateJson);
 				responseCode = HttpRequestTririgaClient.httpPost(
 						assetLeaseTemplateJson, Const.ASSET_LEASE_TEMPLATE);
 
@@ -193,7 +206,7 @@ public class TririgaController {
 				if (Const.CREATE_SUCCESS == responseCode) {
 					List<String> list = map.get(s);
 					for (String allocationsJson : list) {
-						log.info("allocationsJson :{}", allocationsJson);
+//						log.info("allocationsJson :{}", allocationsJson);
 						responseCode = HttpRequestTririgaClient.httpPost(
 								allocationsJson, Const.ALLOCATIONS);
 					}
